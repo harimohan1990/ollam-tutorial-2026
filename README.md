@@ -49,6 +49,9 @@ Ollama makes it simple to run and experiment with large language models such as 
 **Ollama’s ecosystem is a connected framework that lets developers run, integrate, and scale large language models locally or in the cloud, while plugging into APIs, libraries, and community tools.** It’s designed to make LLMs accessible, flexible, and part of a broader workflow rather than isolated experiments.
 
 ---
+<img width="1024" height="1536" alt="Copilot_20260107_213803" src="https://github.com/user-attachments/assets/38f20e83-c93c-45ab-b113-395cf50917b8" />
+
+
 
 ## 🌍 Key Components of the Ollama Ecosystem
 
