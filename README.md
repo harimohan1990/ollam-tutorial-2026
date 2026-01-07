@@ -166,12 +166,123 @@ console.log(response.message.content)
 
 ---
 
-## 📜 Available Models
-
-Explore the full list of supported models:  
-👉 [View Models](https://ollama.com/library)
 
 
+# 🚀 Getting Started with Ollama Cloud
+
+Ollama’s **Cloud** is currently in preview and allows you to run large models without requiring a powerful local GPU. Models are automatically offloaded to Ollama’s cloud service while maintaining the same capabilities as local models.
+
+---
+
+## ☁️ Cloud Models
+- Cloud models run seamlessly with your local tools.
+- Larger models that wouldn’t fit on a personal computer can now be executed in the cloud.
+- For a full list of supported models, check out [Ollama’s model library](https://ollama.com/library).
+
+---
+
+## 🔑 Requirements
+1. An account on [ollama.com](https://ollama.com).
+2. Ollama CLI installed locally.
+3. API key for direct cloud API access.
+
+---
+
+## 🖥️ Running Cloud Models via CLI
+Sign in or create an account:
+```bash
+ollama signin
+```
+
+Run a cloud model:
+```bash
+ollama run gpt-oss:120b-cloud
+```
+
+---
+
+## 🌐 Cloud API Access
+You can also access cloud models directly via Ollama’s API. In this mode, `ollama.com` acts as a remote host.
+
+### Authentication
+Create an API key on [ollama.com](https://ollama.com) and set it as an environment variable:
+```bash
+export OLLAMA_API_KEY=your_api_key
+```
+
+---
+
+## 📋 Listing Available Models
+```bash
+curl https://ollama.com/api/tags
+```
+
+---
+
+## 💬 Generating a Response
+
+### Python
+Install the Ollama Python library:
+```bash
+pip install ollama
+```
+
+Example usage:
+```python
+import os
+from ollama import Client
+
+client = Client(
+    host="https://ollama.com",
+    headers={'Authorization': 'Bearer ' + os.environ.get('OLLAMA_API_KEY')}
+)
+
+messages = [
+  {
+    'role': 'user',
+    'content': 'Why is the sky blue?',
+  },
+]
+
+for part in client.chat('gpt-oss:120b', messages=messages, stream=True):
+  print(part['message']['content'], end='', flush=True)
+```
+
+### JavaScript
+```javascript
+import ollama from 'ollama'
+
+const client = new ollama.Client({
+  host: 'https://ollama.com',
+  headers: { Authorization: `Bearer ${process.env.OLLAMA_API_KEY}` }
+})
+
+const messages = [
+  { role: 'user', content: 'Why is the sky blue?' }
+]
+
+for await (const part of client.chat('gpt-oss:120b', { messages, stream: true })) {
+  process.stdout.write(part.message.content)
+}
+```
+
+### cURL
+```bash
+curl -X POST https://ollama.com/api/chat \
+  -H "Authorization: Bearer $OLLAMA_API_KEY" \
+  -d '{
+    "model": "gpt-oss:120b",
+    "messages": [{"role":"user","content":"Why is the sky blue?"}]
+  }'
+```
+
+---
+
+## ✅ Summary
+- Ollama Cloud lets you run large models without local GPU requirements.
+- Use the CLI or API for seamless integration.
+- Authentication is handled via API keys.
+- Supported across Python, JavaScript, and cURL.
 
 
 
