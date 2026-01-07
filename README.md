@@ -101,3 +101,77 @@ Ollama’s ecosystem is **modular and developer-centric**: you can start small b
 
 
 
+# 🚀 Ollama Quickstart Guide
+
+This guide walks you through running your first model with Ollama.
+
+---
+
+## 🧰 Step 1: Install Ollama
+
+Download Ollama for your operating system:
+
+- **macOS**: `.dmg` installer  
+- **Windows**: `.exe` installer  
+- **Linux**: binary or package manager  
+
+👉 [Download Ollama](https://ollama.com/download)
+
+---
+
+## 🧪 Step 2: Run Your First Model
+
+You can run models using the CLI, cURL, Python, or JavaScript.
+
+### 🔧 CLI
+Open a terminal and run:
+
+```bash
+ollama run gemma3
+```
+
+This will download and run the **Gemma 3** model locally.
+
+---
+
+## 🌐 Other Interfaces
+
+### 🌀 cURL
+```bash
+curl http://localhost:11434/api/generate -d '{
+  "model": "gemma3",
+  "prompt": "What is Ollama?"
+}'
+```
+
+### 🐍 Python
+```python
+import ollama
+
+response = ollama.chat(model='gemma3', messages=[{'role': 'user', 'content': 'What is Ollama?'}])
+print(response['message']['content'])
+```
+
+### 💻 JavaScript
+```javascript
+import ollama from 'ollama'
+
+const response = await ollama.chat({
+  model: 'gemma3',
+  messages: [{ role: 'user', content: 'What is Ollama?' }]
+})
+
+console.log(response.message.content)
+```
+
+---
+
+## 📜 Available Models
+
+Explore the full list of supported models:  
+👉 [View Models](https://ollama.com/library)
+
+
+
+
+
