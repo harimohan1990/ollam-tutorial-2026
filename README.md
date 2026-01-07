@@ -285,4 +285,155 @@ curl -X POST https://ollama.com/api/chat \
 - Supported across Python, JavaScript, and cURL.
 
 
+Got it 👍 — here’s a **well-structured README-style post** you can use to document **Streaming capabilities in Ollama**. I’ve organized it with clear sections, concise explanations, and code examples so it’s developer-friendly and easy to follow.
+
+---
+
+# ⚡ Streaming in Ollama
+
+Streaming allows you to **render text as it is produced by the model**, enabling real-time interactivity. This is especially useful for chat applications, reasoning traces, and tool integrations.
+
+---
+
+## 🔄 Default Behavior
+- **REST API** → Streaming is **enabled by default**.
+- **SDKs (Python, JavaScript)** → Streaming is **disabled by default**.  
+  To enable, set the `stream` parameter to `True`.
+
+---
+
+## 🧩 Key Streaming Concepts
+- **Chatting** → Stream partial assistant messages. Each chunk includes content so you can render messages as they arrive.  
+- **Thinking** → Thinking-capable models emit a `thinking` field alongside regular content. This lets you show or hide reasoning traces before the final answer.  
+- **Tool Calling** → Streamed chunks may include `tool_calls`. You can execute the requested tool and append its output back into the conversation.
+
+---
+
+## 📚 Handling Streamed Chunks
+It’s important to **accumulate partial fields** to maintain conversation history.  
+This is critical for tool calling, where:
+1. The model emits `thinking`.
+2. A tool call is streamed.
+3. The executed tool result must be passed back in the next request.
+
+---
+
+## 🐍 Python Example
+```python
+from ollama import chat
+
+stream = chat(
+  model='qwen3',
+  messages=[{'role': 'user', 'content': 'What is 17 × 23?'}],
+  stream=True,
+)
+
+in_thinking = False
+content = ''
+thinking = ''
+
+for chunk in stream:
+  if chunk.message.thinking:
+    if not in_thinking:
+      in_thinking = True
+      print('Thinking:\n', end='', flush=True)
+    print(chunk.message.thinking, end='', flush=True)
+    thinking += chunk.message.thinking  # accumulate partial thinking
+  elif chunk.message.content:
+    if in_thinking:
+      in_thinking = False
+      print('\n\nAnswer:\n', end='', flush=True)
+    print(chunk.message.content, end='', flush=True)
+    content += chunk.message.content  # accumulate partial content
+
+  # append accumulated fields to maintain conversation history
+  new_messages = [{ 'role': 'assistant', 'thinking': thinking, 'content': content }]
+```
+
+---
+
+## 🌐 JavaScript Example
+```javascript
+import ollama from 'ollama'
+
+const stream = await ollama.chat({
+  model: 'qwen3',
+  messages: [{ role: 'user', content: 'What is 17 × 23?' }],
+  stream: true,
+})
+
+let inThinking = false
+let content = ''
+let thinking = ''
+
+for await (const chunk of stream) {
+  if (chunk.message.thinking) {
+    if (!inThinking) {
+      inThinking = true
+      process.stdout.write('Thinking:\n')
+    }
+    process.stdout.write(chunk.message.thinking)
+    thinking += chunk.message.thinking
+  } else if (chunk.message.content) {
+    if (inThinking) {
+      inThinking = false
+      process.stdout.write('\n\nAnswer:\n')
+    }
+    process.stdout.write(chunk.message.content)
+    content += chunk.message.content
+  }
+
+  const newMessages = [{ role: 'assistant', thinking, content }]
+}
+```
+
+🐍 Python Streaming Example with Ollama
+python
+from ollama import chat
+
+# Start a streaming chat request
+stream = chat(
+    model='qwen3',
+    messages=[{'role': 'user', 'content': 'What is 17 × 23?'}],
+    stream=True,   # Enable streaming
+)
+
+in_thinking = False
+content = ''
+thinking = ''
+
+for chunk in stream:
+    # Handle streamed "thinking" traces
+    if chunk.message.thinking:
+        if not in_thinking:
+            in_thinking = True
+            print('Thinking:\n', end='', flush=True)
+        print(chunk.message.thinking, end='', flush=True)
+        thinking += chunk.message.thinking  # accumulate partial reasoning
+
+    # Handle streamed "content" (final answer)
+    elif chunk.message.content:
+        if in_thinking:
+            in_thinking = False
+            print('\n\nAnswer:\n', end='', flush=True)
+        print(chunk.message.content, end='', flush=True)
+        content += chunk.message.content  # accumulate partial answer
+
+    # Maintain conversation history for next request
+    new_messages = [{
+        'role': 'assistant',
+        'thinking': thinking,
+        'content': content
+    }]
+
+---
+
+## ✅ Summary
+- Streaming delivers **real-time responses** from Ollama models.
+- Use `stream=True` in SDKs to enable it.
+- Handle **chatting, thinking, and tool calls** by accumulating partial chunks.
+- Works across **Python, JavaScript, and REST API**.
+
+
+
 
